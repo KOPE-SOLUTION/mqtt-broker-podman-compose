@@ -2,7 +2,7 @@
 
 ![Title](Thumbnail.png)
 
-YouTube Video : https://youtube.com/@kopesolution?si=yYR2q-bErQooiyFt
+YouTube Video : https://youtu.be/bqaUgJ9S1r4?si=RPIvAvyYuBdMYcUE
 
 ติดตั้ง MQTT Broker ด้วย Eclipse Mosquitto บน WSL Ubuntu ผ่าน Podman Compose สำหรับงานสื่อสารข้อมูลแบบ Real-time
 
