@@ -2,7 +2,7 @@
 
 ![Title](images/Thumbnail.png)
 
-YouTube Video : https://youtu.be/REPLACE_WITH_YOUR_VIDEO
+YouTube Video : https://youtube.com/@kopesolution?si=yYR2q-bErQooiyFt
 
 ติดตั้ง MQTT Broker ด้วย Eclipse Mosquitto บน WSL Ubuntu ผ่าน Podman Compose สำหรับงานสื่อสารข้อมูลแบบ Real-time
 
@@ -165,23 +165,6 @@ sudo apt install -y podman-compose
 
 ```bash
 podman-compose version
-```
-
----
-
-# Remove Old MQTT Broker
-
-ถ้าเคยสร้างไว้แล้ว และต้องการเริ่มใหม่ทั้งหมด ให้ใช้คำสั่งนี้:
-
-```bash
-podman stop mosquitto
-podman rm mosquitto
-```
-
-ลบโฟลเดอร์เดิม:
-
-```bash
-rm -rf ~/mqtt-broker-podman-compose
 ```
 
 ---
@@ -583,5 +566,6 @@ MQTT Broker is a central message hub for real-time systems.
 
 KOPE-SOLUTION
 
-GitHub:
-https://github.com/KOPE-SOLUTION
+GitHub: https://github.com/KOPE-SOLUTION
+Email: kittisak.hanheam@gmail.com
+YouTube Channel: https://youtube.com/@kopesolution?si=yYR2q-bErQooiyFt
