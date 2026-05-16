@@ -124,9 +124,7 @@ mqtt-broker-podman-compose/
 │   ├── mosquitto.conf
 │   └── passwordfile
 ├── data/
-├── log/
-└── images/
-    └── Thumbnail.png
+└── log/
 ```
 
 ---
@@ -177,7 +175,6 @@ podman-compose version
 mkdir -p ~/mqtt-broker-podman-compose/config
 mkdir -p ~/mqtt-broker-podman-compose/data
 mkdir -p ~/mqtt-broker-podman-compose/log
-mkdir -p ~/mqtt-broker-podman-compose/images
 ```
 
 เข้าไปที่โฟลเดอร์หลัก:
@@ -455,65 +452,6 @@ podman stop mosquitto
 podman rm mosquitto
 
 rm -rf ~/mqtt-broker-podman-compose
-```
-
----
-
-# Important Notes
-
-## Where should I run the commands?
-
-ให้รันคำสั่งหลักจากโฟลเดอร์นี้:
-
-```bash
-cd ~/mqtt-broker-podman-compose
-```
-
-ตัวอย่าง:
-
-```bash
-podman-compose up -d
-```
-
-```bash
-podman run --rm -it \
--v ./config:/mosquitto/config \
-docker.io/eclipse-mosquitto:2 \
-mosquitto_passwd -c /mosquitto/config/passwordfile kope
-```
-
-เพราะ `./config` หมายถึง:
-
-```text
-~/mqtt-broker-podman-compose/config
-```
-
----
-
-## Do not run the password command inside config folder
-
-ถ้าเข้าไปอยู่ในโฟลเดอร์นี้:
-
-```bash
-cd ~/mqtt-broker-podman-compose/config
-```
-
-แล้วใช้:
-
-```bash
--v ./config:/mosquitto/config
-```
-
-จะผิด เพราะ path จะกลายเป็น:
-
-```text
-~/mqtt-broker-podman-compose/config/config
-```
-
-ดังนั้นแนะนำให้กลับมาที่โฟลเดอร์หลักก่อนเสมอ:
-
-```bash
-cd ~/mqtt-broker-podman-compose
 ```
 
 ---
