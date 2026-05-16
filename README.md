@@ -1,6 +1,6 @@
 # MQTT Broker on Podman + WSL Ubuntu
 
-![Title](images/Thumbnail.png)
+![Title](Thumbnail.png)
 
 YouTube Video : https://youtube.com/@kopesolution?si=yYR2q-bErQooiyFt
 
