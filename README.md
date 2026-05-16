@@ -1,21 +1,23 @@
-# MQTT Broker with Podman Compose on WSL Ubuntu
+# MQTT Broker on Podman + WSL Ubuntu
 
-![Title](Thumbnail.png)
+![Title](images/Thumbnail.png)
 
-YouTube Video : https://youtube.com/@kopesolution?si=yYR2q-bErQooiyFt
+YouTube Video : https://youtu.be/REPLACE_WITH_YOUR_VIDEO
 
-ติดตั้ง Eclipse Mosquitto MQTT Broker บน WSL Ubuntu ด้วย Podman Compose สำหรับงาน IoT, IIoT, AIoT, PLC, Node-RED และ ROS2
+ติดตั้ง MQTT Broker ด้วย Eclipse Mosquitto บน WSL Ubuntu ผ่าน Podman Compose สำหรับงานสื่อสารข้อมูลแบบ Real-time
 
 เหมาะสำหรับ:
-- IoT Engineer
-- IIoT Engineer
-- AIoT Developer
-- PLC Engineer
-- Node-RED Developer
-- ROS2 Developer
-- Homelab
-- Smart Factory
+- IoT
+- Web Application
+- Dashboard
+- Home Automation
 - Industrial Automation
+- Smart Farm
+- Robotics
+- AI / Data Pipeline
+- Edge Computing
+- Monitoring System
+- Homelab
 
 ---
 
@@ -32,17 +34,21 @@ YouTube Video : https://youtube.com/@kopesolution?si=yYR2q-bErQooiyFt
 
 # What is MQTT?
 
-MQTT คือ Lightweight Messaging Protocol สำหรับการสื่อสารระหว่างอุปกรณ์ในระบบ IoT และ IIoT
+MQTT คือ Protocol สำหรับรับส่งข้อความแบบเบา รวดเร็ว และเหมาะกับงาน Real-time Messaging
 
-ใช้สำหรับ:
-- ESP32
-- PLC
-- Node-RED
-- ROS2
-- Dashboard
-- SCADA
-- AI Agent
-- Cloud Systems
+MQTT ใช้แนวคิด:
+
+```text
+Publisher → MQTT Broker → Subscriber
+```
+
+ตัวอย่างการใช้งาน:
+- Sensor ส่งข้อมูลไป Dashboard
+- ESP32 ส่งข้อมูลไป Server
+- Web App รับข้อมูลแบบ Real-time
+- Node-RED เชื่อมต่ออุปกรณ์หลายระบบ
+- Robot ส่งสถานะการทำงาน
+- AI System รับข้อมูลจาก Edge Device
 
 ---
 
@@ -51,25 +57,76 @@ MQTT คือ Lightweight Messaging Protocol สำหรับการสื�
 ```mermaid
 flowchart LR
 
-    A[ESP32]
-    B[PLC]
-    C[Node-RED]
-    D[ROS2]
-    E[AI Agent]
+    A[Publisher]
+    B[MQTT Broker]
+    C[Subscriber]
 
-    F[MQTT Broker]
+    A --> B
+    B --> C
+```
 
-    G[Dashboard]
-    H[Cloud]
+---
 
-    A --> F
-    B --> F
-    C --> F
-    D --> F
-    E --> F
+# Example Use Cases
 
+```mermaid
+flowchart LR
+
+    A[ESP32 / IoT Device]
+    B[PLC / Machine]
+    C[Smart Farm Sensor]
+    D[Robot]
+    E[Web App]
+    F[AI Service]
+
+    G[MQTT Broker]
+
+    H[Dashboard]
+    I[Database]
+    J[Cloud]
+    K[Mobile App]
+
+    A --> G
+    B --> G
+    C --> G
+    D --> G
+    E --> G
     F --> G
-    F --> H
+
+    G --> H
+    G --> I
+    G --> J
+    G --> K
+```
+
+---
+
+# Project Directory
+
+แนะนำให้ใช้โฟลเดอร์นี้:
+
+```bash
+~/mqtt-broker-podman-compose
+```
+
+เวลาใช้คำสั่งใน README นี้ ให้ยืนอยู่ที่โฟลเดอร์หลักของโปรเจกต์:
+
+```bash
+cd ~/mqtt-broker-podman-compose
+```
+
+โครงสร้างไฟล์:
+
+```text
+mqtt-broker-podman-compose/
+├── compose.yml
+├── config/
+│   ├── mosquitto.conf
+│   └── passwordfile
+├── data/
+├── log/
+└── images/
+    └── Thumbnail.png
 ```
 
 ---
@@ -82,15 +139,11 @@ flowchart LR
 sudo apt update && sudo apt upgrade -y
 ```
 
-<br>
-
 ติดตั้ง Podman:
 
 ```bash
 sudo apt install -y podman
 ```
-
-<br>
 
 ตรวจสอบเวอร์ชัน:
 
@@ -108,8 +161,6 @@ podman --version
 sudo apt install -y podman-compose
 ```
 
-<br>
-
 ตรวจสอบ:
 
 ```bash
@@ -118,48 +169,51 @@ podman-compose version
 
 ---
 
-# Remove Old MQTT Lab (Optional)
+# Remove Old MQTT Broker
 
-หยุดและลบ Container เดิม:
+ถ้าเคยสร้างไว้แล้ว และต้องการเริ่มใหม่ทั้งหมด ให้ใช้คำสั่งนี้:
 
 ```bash
 podman stop mosquitto
 podman rm mosquitto
 ```
 
-<br>
-
-ลบ Project เดิม:
+ลบโฟลเดอร์เดิม:
 
 ```bash
-rm -rf ~/iiot-labs/mosquitto
+rm -rf ~/mqtt-broker-podman-compose
 ```
 
 ---
 
-# 📁 Create Project Directory
+# Create Project Directory
 
 สร้างโฟลเดอร์โปรเจกต์:
 
 ```bash
-mkdir -p ~/iiot-labs/mosquitto/config
-mkdir -p ~/iiot-labs/mosquitto/data
-mkdir -p ~/iiot-labs/mosquitto/log
-
-cd ~/iiot-labs/mosquitto
+mkdir -p ~/mqtt-broker-podman-compose/config
+mkdir -p ~/mqtt-broker-podman-compose/data
+mkdir -p ~/mqtt-broker-podman-compose/log
+mkdir -p ~/mqtt-broker-podman-compose/images
 ```
+
+เข้าไปที่โฟลเดอร์หลัก:
+
+```bash
+cd ~/mqtt-broker-podman-compose
+```
+
+> สำคัญ: คำสั่งต่อจากนี้ให้รันจากโฟลเดอร์ `~/mqtt-broker-podman-compose`
 
 ---
 
-# 📄 Create mosquitto.conf
+# Create mosquitto.conf
 
 สร้างไฟล์:
 
 ```bash
-nano ~/iiot-labs/mosquitto/config/mosquitto.conf
+nano config/mosquitto.conf
 ```
-
-<br>
 
 วางเนื้อหาดังนี้:
 
@@ -178,9 +232,15 @@ log_dest file /mosquitto/log/mosquitto.log
 
 ---
 
-# 🔐 Create MQTT Username and Password
+# Create MQTT Username and Password
 
-รันคำสั่ง:
+ต้องรันคำสั่งนี้จากโฟลเดอร์หลัก:
+
+```bash
+cd ~/mqtt-broker-podman-compose
+```
+
+สร้าง User สำหรับ MQTT:
 
 ```bash
 podman run --rm -it \
@@ -189,13 +249,13 @@ docker.io/eclipse-mosquitto:2 \
 mosquitto_passwd -c /mosquitto/config/passwordfile kope
 ```
 
-<br>
-
-ตั้งรหัสผ่านตามต้องการ
+ระบบจะให้ตั้งรหัสผ่านของ user `kope`
 
 ---
 
-# 🔒 Set Permissions
+# Set Permissions
+
+สำหรับ Lab บน WSL Ubuntu ให้ตั้ง permission แบบง่าย:
 
 ```bash
 chmod 777 ./config/passwordfile
@@ -204,15 +264,13 @@ chmod -R 777 ./config ./data ./log
 
 ---
 
-# 📄 Create compose.yml
+# Create compose.yml
 
 สร้างไฟล์:
 
 ```bash
-nano ~/iiot-labs/mosquitto/compose.yml
+nano compose.yml
 ```
-
-<br>
 
 วางเนื้อหาดังนี้:
 
@@ -242,20 +300,18 @@ services:
 รัน Container:
 
 ```bash
-cd ~/iiot-labs/mosquitto
+cd ~/mqtt-broker-podman-compose
 
 podman-compose up -d
 ```
 
 ---
 
-# 📋 Check Running Containers
+# Check Running Container
 
 ```bash
 podman ps
 ```
-
-<br>
 
 Expected:
 
@@ -266,19 +322,16 @@ PORTS: 0.0.0.0:1883->1883/tcp
 
 ---
 
-# 📜 View Logs
+# View Logs
 
 ```bash
 podman logs -f mosquitto
 ```
 
-<br>
-
 Expected:
 
 ```text
 Info: running mosquitto as user: mosquitto.
-Restored 0 retained messages
 ```
 
 ---
@@ -320,7 +373,40 @@ Terminal Subscribe จะแสดง:
 Hello MQTT
 ```
 
-แสดงว่า MQTT Broker ทำงานสำเร็จ 🚀
+แสดงว่า MQTT Broker ทำงานสำเร็จ
+
+---
+
+# Test from WSL Host
+
+ติดตั้ง MQTT Client บน WSL:
+
+```bash
+sudo apt install -y mosquitto-clients
+```
+
+Subscribe:
+
+```bash
+mosquitto_sub \
+-h localhost \
+-p 1883 \
+-u kope \
+-P 'YOUR_PASSWORD' \
+-t test/topic
+```
+
+Publish:
+
+```bash
+mosquitto_pub \
+-h localhost \
+-p 1883 \
+-u kope \
+-P 'YOUR_PASSWORD' \
+-t test/topic \
+-m "Hello from WSL"
+```
 
 ---
 
@@ -350,6 +436,26 @@ podman restart mosquitto
 
 ---
 
+## Stop by Compose
+
+```bash
+cd ~/mqtt-broker-podman-compose
+
+podman-compose down
+```
+
+---
+
+## Start by Compose
+
+```bash
+cd ~/mqtt-broker-podman-compose
+
+podman-compose up -d
+```
+
+---
+
 ## Remove Container
 
 ```bash
@@ -359,59 +465,123 @@ podman rm mosquitto
 
 ---
 
-## Remove Everything
+## Remove Everything and Start Fresh
 
 ```bash
 podman stop mosquitto
 podman rm mosquitto
 
-rm -rf ~/iiot-labs/mosquitto
+rm -rf ~/mqtt-broker-podman-compose
 ```
 
 ---
 
-# 🌐 Real Industrial Use Cases
+# Important Notes
 
-MQTT ถูกใช้งานใน:
-- Smart Factory
-- Industrial Automation
-- SCADA
-- IIoT
-- AIoT
-- Edge AI
-- Robotics
-- ROS2
-- PLC Communication
-- Remote Monitoring
+## Where should I run the commands?
+
+ให้รันคำสั่งหลักจากโฟลเดอร์นี้:
+
+```bash
+cd ~/mqtt-broker-podman-compose
+```
+
+ตัวอย่าง:
+
+```bash
+podman-compose up -d
+```
+
+```bash
+podman run --rm -it \
+-v ./config:/mosquitto/config \
+docker.io/eclipse-mosquitto:2 \
+mosquitto_passwd -c /mosquitto/config/passwordfile kope
+```
+
+เพราะ `./config` หมายถึง:
+
+```text
+~/mqtt-broker-podman-compose/config
+```
 
 ---
 
-# 🔥 Next Step
+## Do not run the password command inside config folder
+
+ถ้าเข้าไปอยู่ในโฟลเดอร์นี้:
+
+```bash
+cd ~/mqtt-broker-podman-compose/config
+```
+
+แล้วใช้:
+
+```bash
+-v ./config:/mosquitto/config
+```
+
+จะผิด เพราะ path จะกลายเป็น:
+
+```text
+~/mqtt-broker-podman-compose/config/config
+```
+
+ดังนั้นแนะนำให้กลับมาที่โฟลเดอร์หลักก่อนเสมอ:
+
+```bash
+cd ~/mqtt-broker-podman-compose
+```
+
+---
+
+# Real-World Applications
+
+MQTT สามารถใช้ได้หลากหลาย ไม่จำกัดเฉพาะ IIoT เช่น:
+
+- IoT Sensor Network
+- Web Dashboard
+- Home Automation
+- Smart Farm
+- Robotics
+- AI Data Pipeline
+- Remote Monitoring
+- Energy Monitoring
+- Smart City
+- Logistics Tracking
+- Industrial Monitoring
+- Edge Computing
+
+---
+
+# Next Step
 
 หลังจากติดตั้ง MQTT Broker สำเร็จ สามารถต่อยอดไปยัง:
 
 - Node-RED MQTT
 - ESP32 MQTT
-- PLC MQTT
+- Web Dashboard
+- Database Logging
+- PLC Data Monitoring
 - ROS2 MQTT Bridge
-- Dashboard Systems
-- Industrial SCADA
 - AI Agent Integration
+- Cloud Monitoring
 
 ---
 
-# 🧠 Key Idea
+# Key Idea
 
 ```text
-MQTT is the communication backbone of modern IoT and IIoT systems.
+MQTT Broker is a central message hub for real-time systems.
 ```
+
+ระบบต่าง ๆ สามารถ Publish และ Subscribe ข้อมูลผ่าน MQTT Broker เพื่อเชื่อมต่อกันได้ง่ายขึ้น
 
 ---
 
-# 👨‍💻 Author
+# Author
 
 KOPE-SOLUTION
 
-GitHub: https://github.com/KOPE-SOLUTION
-Email: kittisak.hanheam@gmail.com
-YouTube Channel: https://youtube.com/@kopesolution?si=yYR2q-bErQooiyFt
+GitHub:
+https://github.com/KOPE-SOLUTION
